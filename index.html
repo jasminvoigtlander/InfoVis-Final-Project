@@ -1,24 +1,157 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <meta charset="utf-8">
-      <!-- Load stylesheets -->
-      <link href="style.css" type="text/css" rel="stylesheet" />
-      <!-- Load d3.js -->
-      <script src="http://d3js.org/d3.v4.js"></script>
-      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-      <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+    <meta charset="utf-8">
+    <!-- Load stylesheets -->
+    <link href="style.css" type="text/css" rel="stylesheet" />
+    <!-- Load d3.js -->
+    <script src="http://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
   </head>
   <body>
     <!-- Create element where the choropleth map will take place -->
     <svg id="my_dataviz" width="900" height="620"></svg>
     <div class="slidecontainer">
-        <p id="slider-label">Year <span id="demo"></span></p>
+      <p id="slider-label">Year <span id="demo"></span></p>
       <input type="range" min="1995" max="2016" value="2016" class="slider" id="myRange">
     </div>
-    <img src="timeline2.png">
+    <img id="slider-years" src="timeline2.png">
   </body>
   <script>
+    //Global Variables
+    var code = "";
+    var incidentCount = 0;
+    var fatalIncidentCount = 0;
+    var done = false;
+    var countryCodes = {
+      'AFG': 'Afghanistan',
+      'DZA': 'Algeria',
+      'ASM': 'American Samoa',
+      'AGO': 'Angola',
+      'ATG': 'Antigua And Barbuda',
+      'ARG': 'Argentina',
+      'ABW': 'Aruba',
+      'AUS': 'Australia',
+      'AUT': 'Austria',
+      'BHS': 'Bahamas',
+      'BHR': 'Bahrain',
+      'BGD': 'Bangladesh',
+      'BRB': 'Barbados',
+      'BEL': 'Belgium',
+      'BEN': 'Benin',
+      'BOL': 'Bolivia',
+      'BRA': 'Brazil',
+      'CMR': 'Cameroon',
+      'CAN': 'Canada',
+      'CYM': 'Cayman Islands',
+      'CAF': 'Central African Republic',
+      'CHL': 'Chile',
+      'CHN': 'China',
+      'COL': 'Colombia',
+      'COM': 'Comoros',
+      'COG': 'Congo',
+      'CIV': 'Cote D\'Ivoire',
+      'CUB': 'Cuba',
+      'CYP': 'Cyprus',
+      'DNK': 'Denmark',
+      'DOM': 'Dominican Republic',
+      'ECU': 'Ecuador',
+      'EGY': 'Egypt',
+      'SLV': 'El Salvador',
+      'ERI': 'Eritrea',
+      'ETH': 'Ethiopia',
+      'FSM': 'Federated States Of Micronesia',
+      'FJI': 'Fiji',
+      'FIN': 'Finland',
+      'FRA': 'France',
+      'PYF': 'French Polynesia',
+      'GAB': 'Gabon',
+      'DEU': 'Germany',
+      'GHA': 'Ghana',
+      'GIB': 'Gibraltar',
+      'GRC': 'Greece',
+      'GLP': 'Guadeloupe',
+      'GTM': 'Guatemala',
+      'GUY': 'Guyana',
+      'HTI': 'Haiti',
+      'HND': 'Honduras',
+      'HUN': 'Hungary',
+      'ISL': 'Iceland',
+      'IND': 'India',
+      'IDN': 'Indonesia',
+      'IRN': 'Iran',
+      'IRL': 'Ireland',
+      'ISR': 'Israel',
+      'ITA': 'Italy',
+      'JAM': 'Jamaica',
+      'JPN': 'Japan',
+      'KAZ': 'Kazakhstan',
+      'KEN': 'Kenya',
+      'KOR': 'Korea, Republic Of',
+      'KGZ': 'Kyrgyzstan',
+      'LVA': 'Latvia',
+      'LBN': 'Lebanon',
+      'LBY': 'Libya',
+      'LTU': 'Lithuania',
+      'LUX': 'Luxembourg',
+      'MYS': 'Malaysia',
+      'MDV': 'Maldives',
+      'MLI': 'Mali',
+      'MEX': 'Mexico',
+      'MAR': 'Morocco',
+      'MOZ': 'Mozambique',
+      'NAM': 'Namibia',
+      'NRU': 'Nauru',
+      'NPL': 'Nepal',
+      'NLD': 'Netherlands',
+      'NZL': 'New Zealand',
+      'NIC': 'Nicaragua',
+      'NER': 'Niger',
+      'NGA': 'Nigeria',
+      'NOR': 'Norway',
+      'OMN': 'Oman',
+      'PAK': 'Pakistan',
+      'PAN': 'Panama',
+      'PRY': 'Paraguay',
+      'PER': 'Peru',
+      'PHL': 'Philippines',
+      'POL': 'Poland',
+      'PRT': 'Portugal',
+      'QAT': 'Qatar',
+      'REU': 'Reunion',
+      'ROU': 'Romania',
+      'RUS': 'Russia',
+      'SAU': 'Saudi Arabia',
+      'SRB': 'Serbia',
+      'SLE': 'Sierra Leone',
+      'SGP': 'Singapore',
+      'SVK': 'Slovakia',
+      'SLB': 'Solomon Islands',
+      'ZAF': 'South Africa',
+      'ESP': 'Spain',
+      'KNA': 'St Kitts And Nevis',
+      'SDN': 'Sudan',
+      'SWE': 'Sweden',
+      'CHE': 'Switzerland',
+      'TWN': 'Taiwan',
+      'TZA': 'Tanzania',
+      'THA': 'Thailand',
+      'TUN': 'Tunisia',
+      'TUR': 'Turkey',
+      'TCA': 'Turks And Caicos Islands',
+      'UGA': 'Uganda',
+      'UKR': 'Ukraine',
+      'ARE': 'United Arab Emirates',
+      'GBR': 'United Kingdom',
+      'USA': 'United States',
+      'URY': 'Uruguay',
+      'VEN': 'Venezuela',
+      'VNM': 'Vietnam',
+      'YEM': 'Yemen',
+      'ZWE': 'Zimbabwe'
+    };
+
     // Create svg for map
     var svg = d3.select("svg"),
       width = +svg.attr("width"),
@@ -34,17 +167,40 @@
     // Data and color scale
     var data = d3.map();
     var colorScale = d3.scaleThreshold()
-      .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+      .domain([1, 20, 40, 60, 80, 100])
       .range(d3.schemeBlues[7]);
 
     // Load external data and boot
     d3.queue()
       .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-      .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function (d) { data.set(d.code, +d.pop); })
+      .defer(d3.csv, "aircraft_incidents.csv", function (d) {
+        if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
+          if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is above
+            if (code == "" || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
+              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
+              incidentCount++;
+              if (d.Injury_Severity.includes("Fatal(")) {
+                fatalIncidentCount++;
+              }
+            } else if (d.Country !== "") { //if different country than last one
+              data.set(code, Math.round((fatalIncidentCount / incidentCount) * 100) + 1); //add data for country to graph
+              incidentCount = 1;
+              if (d.Injury_Severity.includes("Fatal(")) {
+                fatalIncidentCount = 1;
+              } else {
+                fatalIncidentCount = 0;
+              }
+              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); //reset country code 
+            } else if (d.Country == "" && done == false) { // add data for last country to graph
+              data.set(code, Math.round((fatalIncidentCount / incidentCount) * 100) + 1);
+              done = true;
+            }
+          }
+        }
+      })
       .await(ready);
 
     function ready(error, topo) {
-
       let mouseOver = function (d) {
         d3.select(this)
           .style("opacity", 0.6)
@@ -80,11 +236,45 @@
 
     // Get slider value
     var slider = document.getElementById("myRange");
-      var output = document.getElementById("demo");
-      output.innerHTML = slider.value;
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value;
 
-      slider.oninput = function () {
-        output.innerHTML = this.value;
-      }
+    slider.oninput = function () {
+      output.innerHTML = this.value;
+      resetMap();
+    }
+
+    // Re-load external data and boot
+    function resetMap() {
+      data.clear();
+      d3.queue()
+        .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+        .defer(d3.csv, "aircraft_incidents.csv", function (d) {
+          if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
+            if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is above
+              if (code == "" || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
+                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
+                incidentCount++;
+                if (d.Injury_Severity.includes("Fatal(")) {
+                  fatalIncidentCount++;
+                }
+              } else if (d.Country !== "") { //if different country than last one
+                data.set(code, Math.round((fatalIncidentCount / incidentCount) * 100) + 1); //add data for country to graph
+                incidentCount = 1;
+                if (d.Injury_Severity.includes("Fatal(")) {
+                  fatalIncidentCount = 1;
+                } else {
+                  fatalIncidentCount = 0;
+                }
+                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); //reset country code 
+              } else if (d.Country == "" && done == false) { // add data for last country to graph
+                data.set(code, Math.round((fatalIncidentCount / incidentCount) * 100) + 1);
+                done = true;
+              }
+            }
+          }
+        })
+        .await(ready);
+    }
   </script>
 </html>

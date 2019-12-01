@@ -256,10 +256,10 @@
           console.log('colorscale is:', colorScale(d.total));
           return colorScale(d.total);
         })
-        // .style('stroke', 'white')
-        // .style('stroke-width', 0.4)
-        // .attr('class', function (d) { return 'Country' })
-        // .style('opacity', 0.8)
+        .style('stroke', 'white')
+        .style('stroke-width', 0.4)
+        .attr('class', function (d) { return 'Country' })
+        .style('opacity', 0.8)
         .on('mouseover', mouseOver)
         .on('mouseleave', mouseLeave)
         .on('mousemove', mouseMove)

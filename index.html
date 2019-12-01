@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <meta charset="utf-8">
-
-  <!-- Load d3.js -->
-  <script src="http://d3js.org/d3.v4.js"></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-
-  <!-- Create element where the map will take place -->
-  <svg id="my_dataviz" width="900" height="679"></svg>
-
+  <head>
+      <meta charset="utf-8">
+      <!-- Load stylesheets -->
+      <link href="style.css" type="text/css" rel="stylesheet" />
+      <!-- Load d3.js -->
+      <script src="http://d3js.org/d3.v4.js"></script>
+      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+      <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  </head>
+  <body>
+    <!-- Create element where the choropleth map will take place -->
+    <svg id="my_dataviz" width="900" height="620"></svg>
+    <div class="slidecontainer">
+        <p id="slider-label">Year <span id="demo"></span></p>
+      <input type="range" min="1995" max="2016" value="2016" class="slider" id="myRange">
+    </div>
+    <img src="timeline2.png">
+  </body>
   <script>
     // Create svg for map
     var svg = d3.select("svg"),
@@ -69,5 +77,14 @@
         .on("mouseover", mouseOver)
         .on("mouseleave", mouseLeave)
     }
+
+    // Get slider value
+    var slider = document.getElementById("myRange");
+      var output = document.getElementById("demo");
+      output.innerHTML = slider.value;
+
+      slider.oninput = function () {
+        output.innerHTML = this.value;
+      }
   </script>
 </html>

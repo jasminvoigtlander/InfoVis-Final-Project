@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <!-- Load stylesheets -->
-    <link href="style.css" type="text/css" rel="stylesheet" />
+    <link href='style.css' type='text/css' rel='stylesheet' />
     <!-- Load d3.js -->
-    <script src="http://d3js.org/d3.v4.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+    <script src='http://d3js.org/d3.v4.js'></script>
+    <script src='https://d3js.org/d3-scale-chromatic.v1.min.js'></script>
+    <script src='https://d3js.org/d3-geo-projection.v2.min.js'></script>
   </head>
   <body>
     <!-- Create element where the choropleth map will take place -->
-    <svg id="choropleth-map" width="900" height="590"></svg>
-    <div class="slidecontainer">
-      <p id="slider-label">Year <span id="demo"></span></p>
-      <input type="range" min="1995" max="2016" value="2016" class="slider" id="myRange">
+    <svg id='choropleth-map' width='900' height='590'></svg>
+    <div class='slidecontainer'>
+      <p id='slider-label'>Year <span id='demo'></span></p>
+      <input type='range' min='1995' max='2016' value='2016' class='slider' id='myRange'>
     </div>
-    <img id="slider-years" src="timeline2.png">
-    <div id="key">
+    <img id='slider-years' src='timeline2.png'>
+    <div id='key'>
       <span>100%<br>50%<br>0%<br></span><span class='null'>No Data</span>
-      <div id="gradient"></div>
-      <div id="no-data"></div>
+      <div id='gradient'></div>
+      <div id='no-data'></div>
     </div>
   </body>
   <script>
     //Global Variables
-    var code = "";
+    var code = '';
     var incidentCount = 0;
     var fatalIncidentCount = 0;
     var countryCodes = {
@@ -157,9 +157,9 @@
     };
 
     // Create svg for map
-    var svg = d3.select("svg"),
-      width = +svg.attr("width"),
-      height = +svg.attr("height");
+    var svg = d3.select('svg'),
+      width = +svg.attr('width'),
+      height = +svg.attr('height');
 
     // Map and projection
     var path = d3.geoPath();
@@ -176,22 +176,22 @@
 
     // Load external data and boot
     d3.queue()
-      .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-      .defer(d3.csv, "aircraft_incidents.csv", function (d) {
+      .defer(d3.json, 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+      .defer(d3.csv, 'aircraft_incidents.csv', function (d) {
         if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
           if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is in countryCodes object
-            if (code == "" || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
+            if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
               code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
               incidentCount++;
-              if (d.Injury_Severity.includes("Fatal(")) {
+              if (d.Injury_Severity.includes('Fatal(')) {
                 fatalIncidentCount++;
               }
-            } else if (d.Country !== "") { // if different country than last one
-              var fatalityRate = (Math.round((fatalIncidentCount / incidentCount) * 100) == 0) ? 
-                Math.round((fatalIncidentCount / incidentCount) * 100) + 1 : Math.round((fatalIncidentCount / incidentCount) * 100); // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
+            } else if (d.Country !== '') { // if different country than last one
+              var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
+                (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100; // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
               data.set(code, fatalityRate); // add data for previous country to graph
               incidentCount = 1;
-              if (d.Injury_Severity.includes("Fatal(")) {
+              if (d.Injury_Severity.includes('Fatal(')) {
                 fatalIncidentCount = 1;
               } else {
                 fatalIncidentCount = 0;
@@ -205,28 +205,34 @@
 
     function ready(error, topo, callback) {
       // Add data for last country to graph
-      var fatalityRate = (Math.round((fatalIncidentCount / incidentCount) * 100) == 0) ? 
-        Math.round((fatalIncidentCount / incidentCount) * 100) + 1 : Math.round((fatalIncidentCount / incidentCount) * 100);
+      var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
+        (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100;
       data.set(code, fatalityRate);
       incidentCount = 0;
       fatalIncidentCount = 0;
-      code = "";
+      code = '';
+      // Set value of countries with no data to zero
+      for (let key in countryCodes) {
+        if (!data.hasOwnProperty('$'+key)) {
+          data.set(key, 0);
+        }
+      }
 
+      // Add hover effects
       let mouseOver = function (d) {
         d3.select(this)
-          .style("opacity", 0.6)
+          .style('opacity', 0.6)
           .style('stroke', 'white')
           .style('stroke-width', '2px');
         tooltip.style('display', null);
       }
-
       let mouseLeave = function (d) {
         d3.select(this)
-          .style("opacity", 0.8)
-          .style('stroke', 'none');
+          .style('opacity', 0.8)
+          .style('stroke', 'white')
+          .style('stroke-width', 0.4)
         tooltip.style('display', 'none');
       }
-
       let mouseMove = function (d) {
         var xpos = d3.mouse(this)[0] - 50;
         var ypos = d3.mouse(this)[1] - 50;
@@ -235,26 +241,27 @@
       }
 
       // Draw the map
-      svg.append("g")
-        .selectAll("path")
+      svg.append('g')
+        .selectAll('path')
         .data(topo.features)
         .enter()
-        .append("path")
+        .append('path')
         // draw each country
-        .attr("d", d3.geoPath()
+        .attr('d', d3.geoPath()
           .projection(projection)
         )
         // set the color of each country
-        .attr("fill", function (d) {
+        .attr('fill', function (d) {
           d.total = data.get(d.id) || 0;
+          console.log('colorscale is:', colorScale(d.total));
           return colorScale(d.total);
         })
-        .style("stroke", "white")
-        .style("stroke-width", 0.4)
-        .attr("class", function (d) { return "Country" })
-        .style("opacity", 0.8)
-        .on("mouseover", mouseOver)
-        .on("mouseleave", mouseLeave)
+        // .style('stroke', 'white')
+        // .style('stroke-width', 0.4)
+        // .attr('class', function (d) { return 'Country' })
+        // .style('opacity', 0.8)
+        .on('mouseover', mouseOver)
+        .on('mouseleave', mouseLeave)
         .on('mousemove', mouseMove)
 
         var tooltip = svg.append('g')
@@ -272,8 +279,8 @@
     }
 
     // Get slider value
-    var slider = document.getElementById("myRange");
-    var output = document.getElementById("demo");
+    var slider = document.getElementById('myRange');
+    var output = document.getElementById('demo');
     output.innerHTML = slider.value;
 
     slider.oninput = function () {
@@ -281,26 +288,26 @@
       resetMap();
     }
 
-    // Re-load external data and re-draw map
+    // Re-load external data
     function resetMap() {
       data.clear();
       d3.queue()
-        .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-        .defer(d3.csv, "aircraft_incidents.csv", function (d) {
+        .defer(d3.json, 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
+        .defer(d3.csv, 'aircraft_incidents.csv', function (d) {
           if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
             if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is in countryCodes object
-              if (code == "" || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
+              if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
                 code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
                 incidentCount++;
-                if (d.Injury_Severity.includes("Fatal(")) {
+                if (d.Injury_Severity.includes('Fatal(')) {
                   fatalIncidentCount++;
                 }
-              } else if (d.Country !== "") { // if different country than last one
-                var fatalityRate = (Math.round((fatalIncidentCount / incidentCount) * 100) == 0) ? 
-                  Math.round((fatalIncidentCount / incidentCount) * 100) + 1 : Math.round((fatalIncidentCount / incidentCount) * 100); // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
+              } else if (d.Country !== '') { // if different country than last one
+                var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
+                  (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100; // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
                 data.set(code, fatalityRate); // add data for previous country to graph
                 incidentCount = 1;
-                if (d.Injury_Severity.includes("Fatal(")) {
+                if (d.Injury_Severity.includes('Fatal(')) {
                   fatalIncidentCount = 1;
                 } else {
                   fatalIncidentCount = 0;

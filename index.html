@@ -185,7 +185,6 @@
               var fatalityRate = (Math.round((fatalIncidentCount / incidentCount) * 100) == 0) ? 
                 Math.round((fatalIncidentCount / incidentCount) * 100) + 1 : Math.round((fatalIncidentCount / incidentCount) * 100); // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
               data.set(code, fatalityRate); // add data for previous country to graph
-              console.log(code + " fatality rate is " + fatalityRate);
               incidentCount = 1;
               if (d.Injury_Severity.includes("Fatal(")) {
                 fatalIncidentCount = 1;
@@ -204,7 +203,6 @@
       var fatalityRate = (Math.round((fatalIncidentCount / incidentCount) * 100) == 0) ? 
         Math.round((fatalIncidentCount / incidentCount) * 100) + 1 : Math.round((fatalIncidentCount / incidentCount) * 100);
       data.set(code, fatalityRate);
-      console.log(code + " fatality rate is " + fatalityRate);
       incidentCount = 0;
       fatalIncidentCount = 0;
       code = "";
@@ -270,7 +268,6 @@
                 var fatalityRate = (Math.round((fatalIncidentCount / incidentCount) * 100) == 0) ? 
                   Math.round((fatalIncidentCount / incidentCount) * 100) + 1 : Math.round((fatalIncidentCount / incidentCount) * 100); // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
                 data.set(code, fatalityRate); // add data for previous country to graph
-                console.log(code + " fatality rate is " + fatalityRate);
                 incidentCount = 1;
                 if (d.Injury_Severity.includes("Fatal(")) {
                   fatalIncidentCount = 1;

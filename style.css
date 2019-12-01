@@ -6,10 +6,11 @@
 }
 
 #slider-years {
-    transform: translateY(-10px);
+    transform: translateY(-12px);
 }
 
 .slidecontainer {
+    float: left;
     width: 907px;
 }
   
@@ -45,4 +46,49 @@
     border: 1.4px solid #BEC8D9;
     background: #F8FAFC;
     cursor: pointer;
+}
+
+#key {
+    float: right;
+    transform: translate(-415px, -615px);
+    width: 70px;
+    height: 510px;
+}
+
+#key span {
+    font-family: Avenir Next;
+    font-size: 13px;
+    float: right;
+    clear: right;
+}
+
+#key br {
+    display: block; /* makes it have a width */
+    content: ""; /* clears default height */
+    margin-top: 208px;
+}
+
+.null {
+    margin-top: -195px !important;
+    transform: translateX(15px);
+}
+
+#gradient {
+    width: 27px;
+    height: 468px;
+    background: rgb(255,241,228);
+    background: linear-gradient(rgba(172,69,50,1) 0%, rgba(254,144,51,1) 50%, #FBD9B4 100%);
+    border: 1.4px solid #BEC8D9;
+}
+
+#no-data {
+    width: 27px;
+    height: 27px;
+    margin-top: 5px;
+    background: rgba(255,241,228,1);
+    border: 1.4px solid #BEC8D9;
+}
+
+#choropleth-map {
+    float: left;
 }

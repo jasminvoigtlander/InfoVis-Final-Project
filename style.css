@@ -17,7 +17,7 @@
 }
 
 .slidecontainer {
-    float: left;
+    display: ruby-base-container;
     width: 907px;
 }
   
@@ -97,4 +97,14 @@
 
 #choropleth-map {
     float: left;
+}
+
+.tooltip {
+    line-height: 1;
+    padding: 12px;
+    background: rgba(43, 43, 43, 0.8);
+    width: auto;
+    height: auto;
+    color: #fff;
+    border-radius: 2px;
 }

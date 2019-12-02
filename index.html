@@ -28,7 +28,6 @@
     var code = '';
     var incidentCount = 0;
     var fatalIncidentCount = 0;
-    var deaths = 0;
     var countryCodes = {
       'AFG': 'Afghanistan',
       'DZA': 'Algeria',
@@ -246,7 +245,6 @@
           tooltip.select('text')
                   .attr('dy', '0em')
                   .attr('x', 0)
-<<<<<<< HEAD
                   .html('Country : ' + cCode['country'] + '<br/>')
                   .append('tspan')
                   .attr('dy', '1em')
@@ -265,8 +263,6 @@
                     } else
                       return 'Fatal Incident Ratio : ' + Math.round(cCode['fatalityRate'] * 100) / 100
                   })
-=======
->>>>>>> b6b51f22406d8d2349b19c16bb05c06d30ac7707
         } else {
           tooltip.select('text').text('')
           tooltip.style('display', 'none');
@@ -298,15 +294,12 @@
         .on('mouseleave', mouseLeave)
         .on('mousemove', mouseMove)
 
-<<<<<<< HEAD
         var tooltip = d3.select('body')
           .append('div')
           .attr('class', 'tooltip')
           .style("position", "absolute")
           .style("z-index", "10")
           .style('display', 'none');
-=======
->>>>>>> b6b51f22406d8d2349b19c16bb05c06d30ac7707
 
         tooltip.append('text')
           .attr('x', 15)

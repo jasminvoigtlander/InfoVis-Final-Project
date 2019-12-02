@@ -1,3 +1,10 @@
+.title {
+    font-family: Avenir Next;
+    font-size: 25px;
+    line-height: 5px;
+    /* padding-left: 200px; */
+}
+
 #slider-label {
     transform: translateY(-7px);
     padding-left: 7px;
@@ -49,8 +56,8 @@
 }
 
 #key {
-    float: right;
-    transform: translate(-415px, -615px);
+    float: left;
+    padding: 45px 0px 0px 35px;
     width: 70px;
     height: 510px;
 }
@@ -59,12 +66,11 @@
     font-family: Avenir Next;
     font-size: 13px;
     float: right;
-    clear: right;
 }
 
 #key br {
-    display: block; /* makes it have a width */
-    content: ""; /* clears default height */
+    display: block;
+    content: "";
     margin-top: 208px;
 }
 

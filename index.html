@@ -10,7 +10,6 @@
     <script src='https://d3js.org/d3-geo-projection.v2.min.js'></script>
   </head>
   <body>
-    <!-- Create element where the choropleth map will take place -->
     <p class='title'>Fatal Aircraft Crash Rates from 1995-2016</p>
     <svg id='choropleth-map' width='900' height='590'></svg>
     <div id='key'>
@@ -172,33 +171,27 @@
     // Data and color scale
     var data = d3.map();
 
-    // var keysList = Array.from(Object.keys(countryCodes));
-    // for (i = 0 ; i < keysList.length; i++) {
-    //     data.set(keysList[i], {'fatalityRate' : 0, 'fatalIncidents' : 0, 'incidents' : 0, 'country' : countryCodes[keysList[i]]}); // add data for previous country to graph
-    // };
-
     var colorScale = d3.scaleThreshold()
       .domain([1, 20, 40, 60, 80, 100])
       .range(d3.schemeOranges[7]);
-
-    console.log(data);
 
     // Load external data and boot
     d3.queue()
       .defer(d3.json, 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
       .defer(d3.csv, 'aircraft_incidents.csv', function (d) {
-        if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
-          if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is in countryCodes object
-            if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
-              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
+        // Filter by slider value (Year) and add data to graph
+        if (slider.value == new Date(d.Event_Date).getFullYear().toString()) {
+          if (Object.values(countryCodes).indexOf(d.Country) > -1) {
+            if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) {
+              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country);
               incidentCount++;
               deaths += parseInt(d.Total_Fatal_Injuries);
               if (d.Injury_Severity.includes('Fatal(')) {
                 fatalIncidentCount++;
               }
-            } else if (d.Country !== '') { // if different country than last one
+            } else if (d.Country !== '') {
               var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
-                (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100; // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
+                (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100;
               data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code], 'totalDeaths' : deaths}); // add data for previous country to graph
               incidentCount = 1;
               deaths = 0 + parseInt(d.Total_Fatal_Injuries);
@@ -207,7 +200,7 @@
               } else {
                 fatalIncidentCount = 0;
               }
-              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); //reset country code 
+              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country);
             }
           }
         }
@@ -243,6 +236,7 @@
         var ypos = d3.mouse(this)[1] - 50;
         tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");
         if (data.get(d.id) != undefined) {
+          // Add tooltips
           var cCode = data.get(d.id)
           tooltip.select('text')
                   .attr('dy', '0em')
@@ -285,11 +279,11 @@
         .data(topo.features)
         .enter()
         .append('path')
-        // draw each country
+        // Draw each country
         .attr('d', d3.geoPath()
           .projection(projection)
         )
-        // set the color of each country
+        // Set color of each country
         .attr('fill', function (d) {
           if (data.get(d.id) != undefined) {
             d.total = data.get(d.id)['fatalityRate'];
@@ -333,18 +327,19 @@
       d3.queue()
         .defer(d3.json, 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
         .defer(d3.csv, 'aircraft_incidents.csv', function (d) {
-          if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
-            if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is in countryCodes object
-              if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
-                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
+          // Filter by slider value (Year) and add data to graph
+          if (slider.value == new Date(d.Event_Date).getFullYear().toString()) {
+            if (Object.values(countryCodes).indexOf(d.Country) > -1) {
+              if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) {
+                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country);
                 incidentCount++;
                 deaths += parseInt(d.Total_Fatal_Injuries);
                 if (d.Injury_Severity.includes('Fatal(')) {
                   fatalIncidentCount++;
                 }
-              } else if (d.Country !== '') { // if different country than last one
+              } else if (d.Country !== '') {
                 var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
-                  (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100; // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
+                  (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100;
                 data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code], 'totalDeaths' : deaths}); // add data for previous country to graph
                 incidentCount = 1;
                 deaths = 0 + parseInt(d.Total_Fatal_Injuries);
@@ -353,7 +348,7 @@
                 } else {
                   fatalIncidentCount = 0;
                 }
-                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); //reset country code 
+                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country);
               }
             }
           }

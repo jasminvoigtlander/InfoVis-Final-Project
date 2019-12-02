@@ -171,10 +171,10 @@
     // Data and color scale
     var data = d3.map();
 
-    var keysList = Array.from(Object.keys(countryCodes));
-    for (i = 0 ; i < keysList.length; i++) {
-        data.set(keysList[i], {'fatalityRate' : 0, 'fatalIncidents' : 0, 'incidents' : 0, 'country' : countryCodes[keysList[i]]}); // add data for previous country to graph
-    };
+    // var keysList = Array.from(Object.keys(countryCodes));
+    // for (i = 0 ; i < keysList.length; i++) {
+    //     data.set(keysList[i], {'fatalityRate' : 0, 'fatalIncidents' : 0, 'incidents' : 0, 'country' : countryCodes[keysList[i]]}); // add data for previous country to graph
+    // };
 
     var colorScale = d3.scaleThreshold()
       .domain([1, 20, 40, 60, 80, 100])
@@ -239,8 +239,32 @@
         var xpos = d3.mouse(this)[0] - 50;
         var ypos = d3.mouse(this)[1] - 50;
         tooltip.attr('transform', 'translate(' + xpos + ',' + ypos + ')');
-        var cCode = data.get(d.id)
-        tooltip.select('text').text('Country : ' + cCode['country'])
+        if (data.get(d.id) != undefined) {
+          var cCode = data.get(d.id)
+          tooltip.select('text')
+                  .attr('dy', '0em')
+                  .attr('x', 0)
+                  .text('Country : ' + cCode['country'])
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
+                  .text('# of Incidents : ' + cCode['incidents'])
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
+                  .text('# of Fatal Incidents : ' + cCode['fatalIncidents'])
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
+                  .text(function () {
+                    if (cCode['fatalityRate'] == 1) {
+                      return 'Fatal Incident Ratio : ' + '0'
+                    } else
+                      return 'Fatal Incident Ratio : ' + Math.round(cCode['fatalityRate'] * 100) / 100
+                  })
+        } else {
+          tooltip.select('text').text('')
+        }
       }
 
       // Draw the map
@@ -275,10 +299,11 @@
           .style('border-width', '2px')
           .style('border-radius', '5px')
           .style('padding', '5px');
+
         tooltip.append('text')
           .attr('x', 15)
           .attr('dy', '1.2em')
-          .style('font-size', '1.25em')
+          .style('font-size', '.9em')
           .attr('font-weight', 'bold');
     }
 

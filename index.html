@@ -29,6 +29,7 @@
     var code = '';
     var incidentCount = 0;
     var fatalIncidentCount = 0;
+    var deaths = 0;
     var countryCodes = {
       'AFG': 'Afghanistan',
       'DZA': 'Algeria',
@@ -187,28 +188,30 @@
     d3.queue()
       .defer(d3.json, 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson')
       .defer(d3.csv, 'aircraft_incidents.csv', function (d) {
-        if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
-          if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is in countryCodes object
-            if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
-              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
-              incidentCount++;
-              if (d.Injury_Severity.includes('Fatal(')) {
-                fatalIncidentCount++;
+          if (slider.value == new Date(d.Event_Date).getFullYear().toString()) { // if date matches slider date
+            if (Object.values(countryCodes).indexOf(d.Country) > -1) { // if country code is in countryCodes object
+              if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
+                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
+                incidentCount++;
+                deaths += parseInt(d.Total_Fatal_Injuries);
+                if (d.Injury_Severity.includes('Fatal(')) {
+                  fatalIncidentCount++;
+                }
+              } else if (d.Country !== '') { // if different country than last one
+                var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
+                  (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100; // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
+                data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code], 'deaths' : deaths}); // add data for previous country to graph
+                incidentCount = 1;
+                deaths = 0 + parseInt(d.Total_Fatal_Injuries);
+                if (d.Injury_Severity.includes('Fatal(')) {
+                  fatalIncidentCount = 1;
+                } else {
+                  fatalIncidentCount = 0;
+                }
+                code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); //reset country code 
               }
-            } else if (d.Country !== '') { // if different country than last one
-              var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
-                (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100; // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
-              data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code]}); // add data for previous country to graph
-              incidentCount = 1;
-              if (d.Injury_Severity.includes('Fatal(')) {
-                fatalIncidentCount = 1;
-              } else {
-                fatalIncidentCount = 0;
-              }
-              code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); //reset country code 
             }
           }
-        }
       })
       .await(ready);
 
@@ -216,7 +219,8 @@
       // Add data for last country to graph
       var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
         (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100;
-      data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code]}); // add data for previous country to graph
+      data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code], 'deaths' : deaths}); // add data for previous country to graph
+      deaths = 0;
       incidentCount = 0;
       fatalIncidentCount = 0;
       code = '';
@@ -245,24 +249,27 @@
           tooltip.select('text')
                   .attr('dy', '0em')
                   .attr('x', 0)
-                  .text('Country : ' + cCode['country'])
-                  .append('tspan')
-                  .attr('dy', '1em')
-                  .attr('x', 0)
-                  .text('# of Incidents : ' + cCode['incidents'])
-                  .append('tspan')
-                  .attr('dy', '1em')
-                  .attr('x', 0)
-                  .text('# of Fatal Incidents : ' + cCode['fatalIncidents'])
+                  .text('Country: ' + cCode['country'])
                   .append('tspan')
                   .attr('dy', '1em')
                   .attr('x', 0)
                   .text(function () {
                     if (cCode['fatalityRate'] == 1) {
-                      return 'Fatal Incident Ratio : ' + '0'
+                      return 'Fatal Crash Rate: 0%'
                     } else
-                      return 'Fatal Incident Ratio : ' + Math.round(cCode['fatalityRate'] * 100) / 100
+                      return 'Fatal Crash Rate: ' + Math.round(cCode['fatalityRate'] * 100) / 100 + '%'
                   })
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
+                  .text('# of Fatal Crashes: ' + cCode['fatalIncidents'])
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
+                  .text('# of Deaths: ' + cCode['deaths'])
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
         } else {
           tooltip.select('text').text('')
         }
@@ -295,17 +302,12 @@
 
         var tooltip = svg.append('g')
           .attr('class', tooltip)
-          .style('background-color', 'lightblue')
-          .style('border', 'solid')
-          .style('border-width', '2px')
-          .style('border-radius', '5px')
-          .style('padding', '5px');
 
         tooltip.append('text')
           .attr('x', 15)
           .attr('dy', '1.2em')
           .style('font-size', '.9em')
-          .attr('font-weight', 'bold');
+          .style('font-family', 'Avenir Next');
     }
 
     // Get slider value
@@ -329,14 +331,16 @@
               if (code == '' || code == Object.keys(countryCodes).find(key => countryCodes[key] === d.Country)) { // if first data item or same country as last one
                 code = Object.keys(countryCodes).find(key => countryCodes[key] === d.Country); // set country code
                 incidentCount++;
+                deaths += parseInt(d.Total_Fatal_Injuries);
                 if (d.Injury_Severity.includes('Fatal(')) {
                   fatalIncidentCount++;
                 }
               } else if (d.Country !== '') { // if different country than last one
                 var fatalityRate = ((fatalIncidentCount / incidentCount) * 100) == 0 ? 
                   (fatalIncidentCount / incidentCount) * 100 + 1 : (fatalIncidentCount / incidentCount) * 100; // add 1 if rate is 0 to distinguish countries w no data vs 0% fatality rate
-                data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code]}); // add data for previous country to graph
+                data.set(code, {'fatalityRate' : fatalityRate, 'fatalIncidents' : fatalIncidentCount, 'incidents' : incidentCount, 'country' : countryCodes[code], 'deaths' : deaths}); // add data for previous country to graph
                 incidentCount = 1;
+                deaths = 0 + parseInt(d.Total_Fatal_Injuries);
                 if (d.Injury_Severity.includes('Fatal(')) {
                   fatalIncidentCount = 1;
                 } else {

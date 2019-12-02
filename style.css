@@ -1,5 +1,10 @@
+@font-face {
+    font-family: 'AvenirNext-Regular';
+    src: url('fonts/avenir-next.otf');
+}
+
 .title {
-    font-family: Avenir Next;
+    font-family: 'AvenirNext-Regular';
     font-size: 25px;
     line-height: 5px;
 }
@@ -7,7 +12,7 @@
 #slider-label {
     transform: translateY(-7px);
     padding-left: 7px;
-    font-family: Avenir Next;
+    font-family: 'AvenirNext-Regular';
     font-size: 14px;
 }
 
@@ -62,7 +67,7 @@
 }
 
 #key span {
-    font-family: Avenir Next;
+    font-family: 'AvenirNext-Regular';
     font-size: 13px;
     float: right;
 }
@@ -70,7 +75,7 @@
 #key br {
     display: block;
     content: "";
-    margin-top: 208px;
+    margin-top: 211px;
 }
 
 .null {
@@ -107,5 +112,5 @@
     color: #fff;
     border-radius: 2px;
     font-size: 13px;
-    font-family: Avenir Next;
+    font-family: 'AvenirNext-Regular';
 }

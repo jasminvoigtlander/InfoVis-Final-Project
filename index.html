@@ -220,7 +220,7 @@
       let mouseOver = function (d) {
         if (data.get(d.id) != undefined) {
           d3.select(this)
-          .style('opacity', 0.6)
+          .style('fill-opacity', 0.6)
           .style('stroke', 'white')
           .style('stroke-width', '2px');
           tooltip.style('display', null);
@@ -235,12 +235,12 @@
           tooltip.style('display', 'none');
         }
       }
+      // Add tooltips
       let mouseMove = function (d) {
         var xpos = d3.mouse(this)[0] - 50;
         var ypos = d3.mouse(this)[1] - 50;
         tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");
         if (data.get(d.id) != undefined) {
-          // Add tooltips
           var cCode = data.get(d.id)
           tooltip.select('text')
                   .attr('dy', '0em')

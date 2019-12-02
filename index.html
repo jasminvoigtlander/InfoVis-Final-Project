@@ -220,7 +220,7 @@
       let mouseOver = function (d) {
         if (data.get(d.id) != undefined) {
           d3.select(this)
-          .style('fill-opacity', 0.6)
+          .style('opacity', 0.6)
           .style('stroke', 'white')
           .style('stroke-width', '2px');
           tooltip.style('display', null);

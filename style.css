@@ -17,6 +17,7 @@
 }
 
 .slidecontainer {
+    padding: 20px;
     float: left;
     width: 907px;
 }

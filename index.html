@@ -253,9 +253,9 @@
                   .attr('x', 0)
                   .html(function () {
                     if (cCode['fatalityRate'] == 1) {
-                      return '% of Fatal Incidents: ' + '0' + '<br/>'
+                      return '% of Incidents Fatal: ' + '0' + '<br/>'
                     } else
-                      return '% of Fatal Incidents: ' + Math.round(cCode['fatalityRate'] * 100) / 100 + '<br/>'
+                      return '% of Incidents Fatal: ' + Math.round(cCode['fatalityRate'] * 100) / 100 + '<br/>'
                   })
                   .append('tspan')
                   .attr('dy', '1em')

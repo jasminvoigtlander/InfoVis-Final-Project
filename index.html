@@ -218,18 +218,22 @@
 
       // Add hover effects
       let mouseOver = function (d) {
-        d3.select(this)
+        if (data.get(d.id) != undefined) {
+          d3.select(this)
           .style('opacity', 0.6)
           .style('stroke', 'white')
           .style('stroke-width', '2px');
-        tooltip.style('display', null);
+          tooltip.style('display', null);
+        }
       }
       let mouseLeave = function (d) {
-        d3.select(this)
-          .style('opacity', 1)
-          .style('stroke', 'white')
-          .style('stroke-width', 0.4)
-        tooltip.style('display', 'none');
+        if (data.get(d.id) != undefined) {
+          d3.select(this)
+            .style('opacity', 1)
+            .style('stroke', 'white')
+            .style('stroke-width', 0.4)
+          tooltip.style('display', 'none');
+        }
       }
       let mouseMove = function (d) {
         var xpos = d3.mouse(this)[0] - 50;

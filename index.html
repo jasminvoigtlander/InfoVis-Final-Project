@@ -23,6 +23,7 @@
       <input type='range' min='1995' max='2016' value='2016' class='slider' id='myRange'>
     </div>
     <img id='slider-years' src='timeline2.png'>
+  </body>
   <script>
     //Global Variables
     var code = '';
@@ -239,25 +240,24 @@
         var xpos = d3.mouse(this)[0] - 50;
         var ypos = d3.mouse(this)[1] - 50;
         tooltip.attr('transform', 'translate(' + xpos + ',' + ypos + ')');
-        tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");
         if (data.get(d.id) != undefined) {
           var cCode = data.get(d.id)
           tooltip.select('text')
                   .attr('dy', '0em')
                   .attr('x', 0)
-                  .html('Country : ' + cCode['country'] + '<br/>')
+                  .text('Country : ' + cCode['country'])
                   .append('tspan')
                   .attr('dy', '1em')
                   .attr('x', 0)
-                  .html('# of Incidents : ' + cCode['incidents'] + '<br>')
+                  .text('# of Incidents : ' + cCode['incidents'])
                   .append('tspan')
                   .attr('dy', '1em')
                   .attr('x', 0)
-                  .html('# of Fatal Incidents : ' + cCode['fatalIncidents'] + '<br>')
+                  .text('# of Fatal Incidents : ' + cCode['fatalIncidents'])
                   .append('tspan')
                   .attr('dy', '1em')
                   .attr('x', 0)
-                  .html(function () {
+                  .text(function () {
                     if (cCode['fatalityRate'] == 1) {
                       return 'Fatal Incident Ratio : ' + '0'
                     } else
@@ -265,7 +265,6 @@
                   })
         } else {
           tooltip.select('text').text('')
-          tooltip.style('display', 'none');
         }
       }
 
@@ -294,12 +293,13 @@
         .on('mouseleave', mouseLeave)
         .on('mousemove', mouseMove)
 
-        var tooltip = d3.select('body')
-          .append('div')
-          .attr('class', 'tooltip')
-          .style("position", "absolute")
-          .style("z-index", "10")
-          .style('display', 'none');
+        var tooltip = svg.append('g')
+          .attr('class', tooltip)
+          .style('background-color', 'lightblue')
+          .style('border', 'solid')
+          .style('border-width', '2px')
+          .style('border-radius', '5px')
+          .style('padding', '5px');
 
         tooltip.append('text')
           .attr('x', 15)
@@ -350,5 +350,4 @@
         .await(ready);
     }
   </script>
-  </body>
 </html>

@@ -2,7 +2,6 @@
     font-family: Avenir Next;
     font-size: 25px;
     line-height: 5px;
-    /* padding-left: 200px; */
 }
 
 #slider-label {
@@ -17,8 +16,8 @@
 }
 
 .slidecontainer {
-    padding: 20px;
     float: left;
+    padding: 20px;
     width: 907px;
 }
   
@@ -101,11 +100,13 @@
 }
 
 .tooltip {
-    line-height: 1;
+    line-height: 1.1;
     padding: 12px;
     background: rgba(43, 43, 43, 0.8);
     width: auto;
     height: auto;
     color: #fff;
     border-radius: 2px;
+    font-size: 13px;
+    font-family: Avenir Next;
 }

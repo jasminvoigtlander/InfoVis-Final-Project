@@ -247,30 +247,30 @@
           tooltip.select('text')
                   .attr('dy', '0em')
                   .attr('x', 0)
-                  .html('Country : ' + cCode['country'] + '<br/>')
-                  .append('tspan')
-                  .attr('dy', '1em')
-                  .attr('x', 0)
-                  .html('# of Incidents : ' + cCode['incidents'] + '<br/>')
-                  .append('tspan')
-                  .attr('dy', '1em')
-                  .attr('x', 0)
-                  .html('# of Fatal Incidents : ' + cCode['fatalIncidents'] + '<br/>')
+                  .html('Country: ' + cCode['country'] + '<br/>')
                   .append('tspan')
                   .attr('dy', '1em')
                   .attr('x', 0)
                   .html(function () {
                     if (cCode['fatalityRate'] == 1) {
-                      return '% of Incidents Fatal : ' + '0' + '<br/>'
+                      return '% of Fatal Incidents: ' + '0' + '<br/>'
                     } else
-                      return '% of Incidents Fatal : ' + Math.round(cCode['fatalityRate'] * 100) / 100 + '<br/>'
+                      return '% of Fatal Incidents: ' + Math.round(cCode['fatalityRate'] * 100) / 100 + '<br/>'
                   })
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
+                  .html('# of Incidents: ' + cCode['incidents'] + '<br/>')
+                  .append('tspan')
+                  .attr('dy', '1em')
+                  .attr('x', 0)
+                  .html('# of Fatal Incidents: ' + cCode['fatalIncidents'] + '<br/>')
                   .append('tspan')
                   .attr('dy', '1em')
                   .attr('x', 0)
                   .html(function () {
                     if (cCode['fatalityRate'] > 1) {
-                      return 'Total Deaths : ' + cCode['totalDeaths']
+                      return 'Total Deaths: ' + cCode['totalDeaths']
                     } else
                       return
                   })
@@ -315,8 +315,6 @@
         tooltip.append('text')
           .attr('x', 15)
           .attr('dy', '1.2em')
-          .style('font-size', '.9em')
-          .attr('font-family', 'Avenir Next');
     }
 
     // Get slider value

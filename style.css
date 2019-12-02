@@ -1,7 +1,8 @@
 #slider-label {
     transform: translateY(-7px);
     padding-left: 7px;
-    font: 14px sans-serif;
+    font-family: Avenir Next;
+    font-size: 14px;
 }
 
 #slider-years {
@@ -55,7 +56,8 @@
 }
 
 #key span {
-    font: 14px sans-serif;
+    font-family: Avenir Next;
+    font-size: 13px;
     float: right;
     clear: right;
 }
@@ -90,18 +92,3 @@
 #choropleth-map {
     float: left;
 }
-
-/*.tooltip {*/
-/*    text-align: center;*/
-/*    font: 12px sans-serif;*/
-/*    width: 200px;*/
-/*    height: auto;*/
-/*    padding: 10px;*/
-/*    background-color: white;*/
-/*    -webkit-border-radius: 10px;*/
-/*    -moz-border-radius: 10px;*/
-/*    border-radius: 10px;*/
-/*    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);*/
-/*    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);*/
-/*    box-shadow: 4px 4px 10px rgba(0, 100, 100, 0.4);*/
-/*}*/
